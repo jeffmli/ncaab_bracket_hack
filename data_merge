@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+This is a temporary script file.
+"""
+
+import pandas as pd 
+
+df = pd.read_csv('./MDataFiles_Stage1/MRegularSeasonDetailedResults.csv')
+df_wteams = pd.read_csv('./MDataFiles_Stage1/MTeams.csv')
+df_lteams = pd.read_csv('./MDataFiles_Stage1/MTeams.csv')
+df_wteams.columns = ['w_'+i for i in df_wteams.columns]
+df_lteams.columns = ['l_'+i for i in df_lteams.columns]
+
+df_wconf = pd.read_csv('./MDataFiles_Stage1/MTeamConferences.csv')
+df_lconf = pd.read_csv('./MDataFiles_Stage1/MTeamConferences.csv')
+
+df_wconf.columns = ['w_'+i for i in df_wconf.columns]
+df_lconf.columns = ['l_'+i for i in df_lconf.columns]
+
+df_team_names = pd.merge(pd.merge(df, df_wteams, left_on = 'WTeamID', right_on = 'w_TeamID'), df_lteams, left_on = 'LTeamID',right_on='l_TeamID')
+
+df_tn_conf = pd.merge(pd.merge(df_team_names, df_wconf, left_on = ['w_TeamID','Season'], right_on = ['w_TeamID','w_Season']), df_lconf,left_on = ['l_TeamID','Season'], right_on = ['l_TeamID','l_Season'])
+
+df_tn_conf.to_csv('data_by_game.csv')
